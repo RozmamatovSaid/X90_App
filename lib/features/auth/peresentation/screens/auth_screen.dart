@@ -6,6 +6,6 @@ class AuthScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(appBar: AppBar(title: GlobalText.title('X90'),),);
+    return Scaffold(appBar: AppBar(title: GlobalText.title('X90')));
   }
 }

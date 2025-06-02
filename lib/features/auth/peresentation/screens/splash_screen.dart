@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:x90/core/router/routes.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -26,6 +28,10 @@ class _SplashScreenState extends State<SplashScreen>
       begin: -1.0,
       end: 1.0,
     ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeInOut));
+
+    Future.delayed(Duration(seconds: 5), () {
+      context.go(AppRoutes.login);
+    });
   }
 
   @override
@@ -41,7 +47,7 @@ class _SplashScreenState extends State<SplashScreen>
     final baseColor = isDark ? Colors.white : Colors.black;
 
     return Scaffold(
-      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+      backgroundColor: Colors.black,
       body: Center(
         child: AnimatedBuilder(
           animation: _animation,

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:x90/core/constants/themes/app_theme.dart';
-import 'package:x90/features/auth/peresentation/screens/auth_screen.dart';
-import 'package:x90/features/auth/peresentation/screens/splash_screen.dart';
+import 'package:x90/core/router/router.dart';
 
 void main() => runApp(X90App());
 
@@ -10,12 +9,12 @@ class X90App extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return MaterialApp.router(
       debugShowCheckedModeBanner: false,
       theme: AppTheme.lightTheme,
       darkTheme: AppTheme.darkTheme,
       themeMode: ThemeMode.dark,
-      home: SplashScreen(),
+      routerConfig: AppRouter.router,
     );
   }
 }
