@@ -6,7 +6,7 @@ import 'package:x90/features/auth/peresentation/screens/splash_screen.dart';
 
 class AppRouter {
   static final router = GoRouter(
-    initialLocation: AppRoutes.splashScreen,
+    initialLocation: AppRoutes.signUp,
     routes: [
       GoRoute(
         path: AppRoutes.splashScreen,
@@ -19,6 +19,10 @@ class AppRouter {
       GoRoute(
         path: AppRoutes.signUp,
         builder: (context, state) => SignupScreen(),
+      ),
+      GoRoute(
+        path: AppRoutes.enterTheCode,
+        builder: (context, state) => EnterTheCode(),
       ),
     ],
   );

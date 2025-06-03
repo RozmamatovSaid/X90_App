@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:x90/core/constants/colors/app_colors.dart';
 
+enum AppButtonType { primary, secondary, outline, text }
+
 class AppButton extends StatelessWidget {
   final String text;
   final VoidCallback? onPressed;
@@ -35,7 +37,6 @@ class AppButton extends StatelessWidget {
     this.isDisabled = false,
   });
 
-  // Factory constructors
   factory AppButton.primary({
     Key? key,
     required String text,
@@ -118,7 +119,7 @@ class AppButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Widget buttonChild = _buildButtonContent();
+    Widget buttonChild = _buildButtonContent(context);
 
     if (margin != null) {
       buttonChild = Padding(padding: margin!, child: buttonChild);
@@ -127,71 +128,81 @@ class AppButton extends StatelessWidget {
     return SizedBox(width: width, height: height ?? 52, child: buttonChild);
   }
 
-  Widget _buildButtonContent() {
+  Widget _buildButtonContent(BuildContext context) {
     final bool disabled = isDisabled || onPressed == null;
 
     switch (type) {
       case AppButtonType.primary:
         return ElevatedButton(
           onPressed: disabled || isLoading ? null : onPressed,
-          style: ElevatedButton.styleFrom(
-            backgroundColor: backgroundColor ?? AppColors.primaryButton,
-            foregroundColor: textColor ?? AppColors.buttonText,
-            disabledBackgroundColor: AppColors.disabledButton,
-            elevation: 0,
-            padding:
-                padding ??
-                const EdgeInsets.symmetric(vertical: 16, horizontal: 24),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(12),
-            ),
-          ),
+          style: Theme.of(context).elevatedButtonTheme.style?.copyWith(
+                backgroundColor: WidgetStateProperty.resolveWith((states) {
+                  if (states.contains(WidgetState.disabled)) {
+                    return AppColors.disabledButton;
+                  }
+                  return backgroundColor ?? AppColors.primaryButton;
+                }),
+                foregroundColor: WidgetStateProperty.all(
+                    textColor ?? AppColors.buttonText),
+                padding: WidgetStateProperty.all(
+                    padding ?? const EdgeInsets.symmetric(vertical: 16, horizontal: 24)),
+              ),
           child: _buildChild(),
         );
 
       case AppButtonType.secondary:
         return ElevatedButton(
           onPressed: disabled || isLoading ? null : onPressed,
-          style: ElevatedButton.styleFrom(
-            backgroundColor: backgroundColor ?? AppColors.secondaryButton,
-            foregroundColor: textColor ?? AppColors.secondaryButtonText,
-            disabledBackgroundColor: AppColors.disabledButton,
-            elevation: 0,
-            padding:
-                padding ??
-                const EdgeInsets.symmetric(vertical: 16, horizontal: 24),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(12),
-            ),
-          ),
+          style: Theme.of(context).elevatedButtonTheme.style?.copyWith(
+                backgroundColor: WidgetStateProperty.resolveWith((states) {
+                  if (states.contains(WidgetState.disabled)) {
+                    return AppColors.disabledButton;
+                  }
+                  return backgroundColor ?? AppColors.secondaryButton;
+                }),
+                foregroundColor: WidgetStateProperty.all(
+                    textColor ?? AppColors.secondaryButtonText),
+                padding: WidgetStateProperty.all(
+                    padding ?? const EdgeInsets.symmetric(vertical: 16, horizontal: 24)),
+              ),
           child: _buildChild(),
         );
 
       case AppButtonType.outline:
         return OutlinedButton(
           onPressed: disabled || isLoading ? null : onPressed,
-          style: OutlinedButton.styleFrom(
-            foregroundColor: textColor ?? AppColors.primaryText,
-            side: BorderSide(color: AppColors.borderColor, width: 1),
-            padding:
-                padding ??
-                const EdgeInsets.symmetric(vertical: 16, horizontal: 24),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(12),
-            ),
-          ),
+          style: Theme.of(context).outlinedButtonTheme.style?.copyWith(
+                foregroundColor: WidgetStateProperty.resolveWith((states) {
+                  if (states.contains(WidgetState.disabled)) {
+                    return AppColors.disabledButton;
+                  }
+                  return textColor ?? AppColors.primaryText;
+                }),
+                padding: WidgetStateProperty.all(
+                    padding ?? const EdgeInsets.symmetric(vertical: 16, horizontal: 24)),
+                side: WidgetStateProperty.resolveWith((states) {
+                  if (states.contains(WidgetState.disabled)) {
+                    return const BorderSide(color: AppColors.disabledButton, width: 1);
+                  }
+                  return const BorderSide(color: AppColors.borderColor, width: 1);
+                }),
+              ),
           child: _buildChild(),
         );
 
       case AppButtonType.text:
         return TextButton(
           onPressed: disabled || isLoading ? null : onPressed,
-          style: TextButton.styleFrom(
-            foregroundColor: textColor ?? AppColors.primaryText,
-            padding:
-                padding ??
-                const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
-          ),
+          style: Theme.of(context).textButtonTheme.style?.copyWith(
+                foregroundColor: WidgetStateProperty.resolveWith((states) {
+                  if (states.contains(WidgetState.disabled)) {
+                    return AppColors.disabledButton;
+                  }
+                  return textColor ?? AppColors.primaryText;
+                }),
+                padding: WidgetStateProperty.all(
+                    padding ?? const EdgeInsets.symmetric(vertical: 12, horizontal: 16)),
+              ),
           child: _buildChild(),
         );
     }
@@ -204,7 +215,7 @@ class AppButton extends StatelessWidget {
         height: 20,
         child: CircularProgressIndicator(
           strokeWidth: 2,
-          valueColor: AlwaysStoppedAnimation<Color>(AppColors.primaryWhite),
+          valueColor: AlwaysStoppedAnimation<Color>(AppColors.buttonText),
         ),
       );
     }
@@ -213,13 +224,14 @@ class AppButton extends StatelessWidget {
       return Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(icon, size: 20),
+          Icon(icon, size: 20, color: textColor ?? AppColors.buttonText),
           const SizedBox(width: 8),
           Text(
             text,
             style: TextStyle(
               fontSize: fontSize ?? 16,
               fontWeight: fontWeight ?? FontWeight.w600,
+              color: textColor ?? AppColors.buttonText,
             ),
           ),
         ],
@@ -231,9 +243,8 @@ class AppButton extends StatelessWidget {
       style: TextStyle(
         fontSize: fontSize ?? 16,
         fontWeight: fontWeight ?? FontWeight.w600,
+        color: textColor ?? AppColors.buttonText,
       ),
     );
   }
 }
-
-enum AppButtonType { primary, secondary, outline, text }
